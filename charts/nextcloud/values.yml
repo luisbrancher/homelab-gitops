@@ -1,0 +1,31 @@
+---
+nextcloud:
+  host: nextcloud.homelab.luisbrancher.dev
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-credentials
+    usernameKey: username
+    passwordKey: password
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - secretName: nextcloud-tls
+      hosts:
+        - nextcloud.homelab.luisbrancher.dev
+
+persistence:
+  enabled: true
+  existingClaim: nextcloud-pvc
+
+internalDatabase:
+  enabled: false
+
+postgresql:
+  enabled: true
+  global:
+    postgresql:
+      auth:
+        existingSecret: nextcloud-db-credentials

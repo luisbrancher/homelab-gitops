@@ -1,0 +1,32 @@
+---
+immich:
+  existingSecret: immich-credentials
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - secretName: immich-tls
+      hosts:
+        - immich.homelab.luisbrancher.dev
+  hosts:
+    - host: immich.homelab.luisbrancher.dev
+      paths:
+        - path: /
+          pathType: Prefix
+
+postgresql:
+  enabled: true
+  global:
+    postgresql:
+      auth:
+        existingSecret: immich-db-credentials
+
+redis:
+  enabled: true
+
+server:
+  persistence:
+    library:
+      existingClaim: immich-pvc

@@ -1,0 +1,9 @@
+# nunca commitar secrets reais
+*-secret.yaml
+*-secrets.yaml
+secrets/
+.env
+
+# macOS metadata
+._*
+.DS_Store

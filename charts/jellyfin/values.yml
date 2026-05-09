@@ -1,0 +1,22 @@
+---
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - secretName: jellyfin-tls
+      hosts:
+        - jellyfin.homelab.luisbrancher.dev
+  hosts:
+    - host: jellyfin.homelab.luisbrancher.dev
+      paths:
+        - path: /
+          pathType: Prefix
+
+persistence:
+  config:
+    enabled: true
+    existingClaim: jellyfin-config-pvc
+  media:
+    enabled: true
+    existingClaim: jellyfin-media-pvc

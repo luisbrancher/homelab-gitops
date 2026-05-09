@@ -1,0 +1,25 @@
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: homelab-apps
+  namespace: argocd
+  # Garante que ao deletar esse App, os filhos também são deletados
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/luisbrancher/homelab-gitops
+    targetRevision: main
+    path: apps          # ← ArgoCD monitora esse diretório inteiro
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd   # os Apps objects vivem no namespace do ArgoCD
+  syncPolicy:
+    automated:
+      prune: true       # remove apps deletados do git
+      selfHeal: true    # corrige drift automático
+    syncOptions:
+      - CreateNamespace=true
