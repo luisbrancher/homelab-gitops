@@ -1,32 +1,57 @@
 ---
+env:
+  REDIS_HOSTNAME: '{{ printf "%s-redis-master" .Release.Name }}'
+  DB_HOSTNAME: "{{ .Release.Name }}-postgresql"
+  DB_USERNAME: "{{ .Values.postgresql.global.postgresql.auth.username }}"
+  DB_DATABASE_NAME: "{{ .Values.postgresql.global.postgresql.auth.database }}"
+  DB_PASSWORD: "{{ .Values.postgresql.global.postgresql.auth.password }}"
+  IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+
+image:
+  tag: v1.136.0  # trava a versão — o chart não atualiza automaticamente com o Immich
+
 immich:
-  existingSecret: immich-credentials
-
-ingress:
-  enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  tls:
-    - secretName: immich-tls
-      hosts:
-        - immich.homelab.luisbrancher.dev
-  hosts:
-    - host: immich.homelab.luisbrancher.dev
-      paths:
-        - path: /
-          pathType: Prefix
-
-postgresql:
-  enabled: true
-  global:
-    postgresql:
-      auth:
-        existingSecret: immich-db-credentials
-
-redis:
-  enabled: true
-
-server:
   persistence:
     library:
       existingClaim: immich-pvc
+
+ingress:
+  main:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls:
+      - secretName: immich-tls
+        hosts:
+          - immich.homelab.luisbrancher.dev
+    hosts:
+      - host: immich.homelab.luisbrancher.dev
+        paths:
+          - path: /
+            pathType: Prefix
+
+postgresql:
+  enabled: true
+  image:
+    repository: tensorchord/pgvecto-rs
+    tag: pg14-v0.2.0
+  global:
+    postgresql:
+      auth:
+        username: immich
+        database: immich
+        password: ""                    # deixa vazio — vai usar o existingSecret
+        existingSecret: immich-db-credentials
+  primary:
+    initdb:
+      scripts:
+        create-extensions.sql: |
+          CREATE EXTENSION cube;
+          CREATE EXTENSION earthdistance;
+          CREATE EXTENSION vectors;
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
