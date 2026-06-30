@@ -101,6 +101,10 @@ kubectl create secret generic immich-credentials \
   --namespace immich \
   --from-literal=secret=<jwt-secret>
 
+kubectl create secret generic immich-db-credentials \
+  --namespace immich \
+  --from-literal=password=<senha-do-banco>
+
 kubectl create secret generic cloudflare-api-token \
   --namespace cert-manager \
   --from-literal=api-token=<token>
@@ -129,6 +133,10 @@ Persistent data lives on a dedicated NFS server (SATA 1TB). Jellyfin media uses 
 | `jellyfin-media-pvc` | hostPath `/mnt/media` (NVMe) | 200Gi |
 
 ---
+> **TODO:** `immich-nextcloud-photos-pvc` está criado mas ainda não montado no Immich.
+> Para ativar como External Library, adicionar `extraVolumes` e `extraVolumeMounts` no
+> `charts/immich/values.yml` e configurar o path na UI do Immich após o primeiro deploy.
+
 
 ## Related
 
