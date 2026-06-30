@@ -1,6 +1,6 @@
 ---
 image:
-  tag: v1.143.1   # trava a versão do Immich
+  tag: v3.0.0
 
 env:
   DB_HOSTNAME: immich-postgres-rw
