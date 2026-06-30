@@ -9,8 +9,8 @@ spec:
   accessModes:
     - ReadWriteOnce
   nfs:
-    server:         # IP do storage-server
-    path: /mnt/data/nextcloud
+    server: 10.10.10.15
+    path: /mnt/data-ssd/nextcloud
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1

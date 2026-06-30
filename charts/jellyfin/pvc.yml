@@ -10,8 +10,8 @@ spec:
   accessModes:
     - ReadWriteOnce
   nfs:
-    server: 192.168.1.x
-    path: /mnt/data/jellyfin
+    server: 10.10.10.15
+    path: /mnt/data-ssd/jellyfin
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1

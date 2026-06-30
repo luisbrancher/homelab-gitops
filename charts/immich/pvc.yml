@@ -9,8 +9,8 @@ spec:
   accessModes:
     - ReadWriteOnce
   nfs:
-    server: 192.168.1.x
-    path: /mnt/data/immich
+    server: 10.10.10.15
+    path: /mnt/data-ssd/immich
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
@@ -39,7 +39,7 @@ spec:
     - ReadOnlyMany       # ← read-only
   nfs:
     server: 192.168.1.x
-    path: /mnt/data/nextcloud/photos   # mesmo path do Nextcloud
+    path: /mnt/data-ssd/nextcloud/photos   # mesmo path do Nextcloud
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
