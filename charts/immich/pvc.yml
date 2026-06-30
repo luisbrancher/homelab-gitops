@@ -8,6 +8,7 @@ spec:
     storage: 100Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
   nfs:
     server: 10.10.10.15
     path: /mnt/data-ssd/immich
@@ -21,12 +22,11 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
   resources:
     requests:
-      storage: 100Gi
+      storage: 200Gi
   volumeName: immich-pv
-
-
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -36,10 +36,11 @@ spec:
   capacity:
     storage: 200Gi
   accessModes:
-    - ReadOnlyMany       # ← read-only
+    - ReadOnlyMany
+  storageClassName: ""
   nfs:
-    server: 192.168.1.x
-    path: /mnt/data-ssd/nextcloud/photos   # mesmo path do Nextcloud
+    server: 10.10.10.15         
+    path: /mnt/data-ssd/nextcloud/photos
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
@@ -50,6 +51,7 @@ metadata:
 spec:
   accessModes:
     - ReadOnlyMany
+  storageClassName: ""
   resources:
     requests:
       storage: 200Gi

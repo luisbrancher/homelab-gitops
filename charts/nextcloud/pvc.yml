@@ -8,6 +8,7 @@ spec:
     storage: 200Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
   nfs:
     server: 10.10.10.15
     path: /mnt/data-ssd/nextcloud
@@ -21,6 +22,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
   resources:
     requests:
       storage: 200Gi

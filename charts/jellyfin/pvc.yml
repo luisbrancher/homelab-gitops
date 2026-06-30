@@ -1,5 +1,4 @@
 ---
-# config: fica no NFS junto com o resto
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -9,6 +8,7 @@ spec:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
   nfs:
     server: 10.10.10.15
     path: /mnt/data-ssd/jellyfin
@@ -22,12 +22,12 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
   resources:
     requests:
       storage: 10Gi
   volumeName: jellyfin-config-pv
 ---
-# fica no NVMe, para as mídias
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -38,7 +38,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /mnt/media       # diretório local no NVMe do k3s-node
+    path: /mnt/media ## Nvme local
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
