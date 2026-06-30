@@ -1,9 +1,18 @@
 # nunca commitar secrets reais
+*-secret.yml
+*-secrets.yml
 *-secret.yaml
 *-secrets.yaml
 secrets/
 .env
 
+# kubeconfig local (nunca commitar credenciais de cluster)
+kubeconfig
+*.kubeconfig
+
 # macOS metadata
 ._*
 .DS_Store
+
+# WSL/Windows
+Thumbs.db
