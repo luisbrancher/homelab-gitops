@@ -8,13 +8,16 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://nextcloud.github.io/helm
-    chart: nextcloud
-    targetRevision: "5.x"
-    helm:
-      valueFiles:
-        - $values/charts/nextcloud/values.yaml
+  sources:
+    - repoURL: https://nextcloud.github.io/helm
+      chart: nextcloud
+      targetRevision: "5.x"
+      helm:
+        valueFiles:
+          - $values/charts/nextcloud/values.yml
+    - repoURL: https://github.com/luisbrancher/homelab-gitops
+      targetRevision: main
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: nextcloud

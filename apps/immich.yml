@@ -8,13 +8,16 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://immich-app.github.io/immich-charts
-    chart: immich
-    targetRevision: "0.x"
-    helm:
-      valueFiles:
-        - $values/charts/immich/values.yaml
+  sources:
+    - repoURL: https://immich-app.github.io/immich-charts
+      chart: immich
+      targetRevision: "0.x"
+      helm:
+        valueFiles:
+          - $values/charts/immich/values.yml
+    - repoURL: https://github.com/luisbrancher/homelab-gitops
+      targetRevision: main
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: immich
