@@ -15,6 +15,11 @@ ingress:
     - secretName: nextcloud-tls
       hosts:
         - nextcloud.homelab.luisbrancher.dev
+  hosts:
+    - host: nextcloud.homelab.luisbrancher.dev
+      paths:
+        - path: /
+          pathType: Prefix
 
 persistence:
   enabled: true

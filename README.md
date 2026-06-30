@@ -97,6 +97,10 @@ kubectl create secret generic nextcloud-credentials \
   --from-literal=username=<user> \
   --from-literal=password=<password>
 
+kubectl create secret generic nextcloud-db-credentials \
+  --namespace nextcloud \
+  --from-literal=password=<senha-do-banco>
+
 kubectl create secret generic immich-credentials \
   --namespace immich \
   --from-literal=secret=<jwt-secret>
