@@ -12,7 +12,6 @@ spec:
     solvers:
       - dns01:
           cloudflare:
-            email: luisbrancher@proton.me
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
