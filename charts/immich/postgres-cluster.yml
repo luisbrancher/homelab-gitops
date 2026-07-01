@@ -23,11 +23,6 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
         - CREATE EXTENSION IF NOT EXISTS cube CASCADE;
         - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
-    
-  securityContextTemplate:
-    runAsUser: 999
-    runAsGroup: 999
-    fsGroup: 999
 
   storage:
     size: 20Gi
