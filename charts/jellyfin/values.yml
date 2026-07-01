@@ -20,3 +20,7 @@ persistence:
   media:
     enabled: true
     existingClaim: jellyfin-media-pvc
+
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
