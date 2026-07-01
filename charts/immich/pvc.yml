@@ -25,7 +25,7 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 200Gi
+      storage: 100Gi
   volumeName: immich-pv
 ---
 apiVersion: v1
