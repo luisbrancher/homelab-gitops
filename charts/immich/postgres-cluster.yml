@@ -7,7 +7,7 @@ metadata:
 spec:
   instances: 1
 
-  imageName: ghcr.io/immich-app/postgres:17-vectorchord0.5.3
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:17-0.3.0
 
   postgresql:
     shared_preload_libraries:
