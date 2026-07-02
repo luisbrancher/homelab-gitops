@@ -34,7 +34,7 @@ metadata:
   name: immich-nextcloud-photos-pv
 spec:
   capacity:
-    storage: 200Gi
+    storage: 1500Gi
   accessModes:
     - ReadOnlyMany
   storageClassName: ""
@@ -54,5 +54,5 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 200Gi
+      storage: 1500Gi
   volumeName: immich-nextcloud-photos-pv
