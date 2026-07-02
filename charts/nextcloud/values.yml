@@ -29,10 +29,12 @@ internalDatabase:
   enabled: false
 
 postgresql:
+  enabled: false
+
+externalDatabase:
   enabled: true
-  image:
-    tag: 16-debian-12   # tag flutuante, sempre existe
-  global:
-    postgresql:
-      auth:
-        existingSecret: nextcloud-db-credentials
+  type: postgresql
+  host: nextcloud-postgres-rw
+  database: nextcloud
+  existingSecret: nextcloud-db-credentials
+  existingSecretPasswordKey: password
