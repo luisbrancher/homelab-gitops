@@ -5,7 +5,7 @@ metadata:
   name: nextcloud-pv
 spec:
   capacity:
-    storage: 200Gi
+    storage: 1500Gi
   accessModes:
     - ReadWriteOnce
   storageClassName: ""
@@ -25,5 +25,5 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 200Gi
+      storage: 1500Gi
   volumeName: nextcloud-pv
