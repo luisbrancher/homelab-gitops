@@ -34,7 +34,10 @@ postgresql:
 externalDatabase:
   enabled: true
   type: postgresql
-  host: nextcloud-postgres-rw
+  host: nextcloud-postgresql
   database: nextcloud
-  existingSecret: nextcloud-db-credentials
-  existingSecretPasswordKey: password
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-db-credentials
+    usernameKey: username
+    passwordKey: password
