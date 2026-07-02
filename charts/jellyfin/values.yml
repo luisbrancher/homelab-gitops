@@ -13,6 +13,14 @@ ingress:
         - path: /
           pathType: Prefix
 
+service:
+  main:
+    type: NodePort
+    ports:
+      http:
+        port: 8096
+        nodePort: 30096
+
 persistence:
   config:
     enabled: true
