@@ -41,3 +41,13 @@ externalDatabase:
     secretName: nextcloud-db-credentials
     usernameKey: username
     passwordKey: password
+
+livenessProbe:
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  failureThreshold: 10
+
+readinessProbe:
+  initialDelaySeconds: 120
+  periodSeconds: 30
+  failureThreshold: 10
