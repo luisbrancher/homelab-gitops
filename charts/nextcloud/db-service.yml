@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-postgresql
+  namespace: nextcloud
+spec:
+  type: ExternalName
+  externalName: nextcloud-postgres-rw.nextcloud.svc.cluster.local
