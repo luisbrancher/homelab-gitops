@@ -1,4 +1,3 @@
----
 image:
   tag: v3.0.0
 
@@ -22,14 +21,20 @@ controllers:
           REDIS_HOSTNAME: immich-valkey
           IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
 
-immich:
-  persistence:
-    library:
-      existingClaim: immich-pvc
+
+# BLOQUEIO DE INGRESS (Resolve o erro "Immich ML")
+machine-learning:
+  ingress:
+    main:
+      enabled: false
 
 valkey:
   enabled: true
+  ingress:
+    main:
+      enabled: false
 
+# Ingress principal
 ingress:
   server:
     enabled: true
@@ -44,6 +49,18 @@ ingress:
         paths:
           - path: /
             pathType: Prefix
+
+
+# STORAGE E EXTERNAL LIBRARY (Nextcloud)
+immich:
+  persistence:
+    library:
+      existingClaim: immich-pvc
+    # fotos do Nextcloud em modo somente-leitura
+    nextcloud:
+      existingClaim: immich-nextcloud-photos-pvc
+      mountPath: /usr/src/app/external
+      readOnly: true
 
 podSecurityContext:
   runAsUser: 0
