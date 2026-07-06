@@ -34,11 +34,11 @@ metadata:
   name: jellyfin-media-pv
 spec:
   capacity:
-    storage: 200Gi
+    storage: 220Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /mnt/media ## Nvme local
+    path: /mnt/media-ssd ## Dedicated SSD, LVM-Thin (media-ssd pool)
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
@@ -52,5 +52,5 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 200Gi
+      storage: 220Gi
   volumeName: jellyfin-media-pv
