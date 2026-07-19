@@ -1,33 +1,31 @@
 image:
   tag: v3.0.3
 
-controllers:
-  main:
-    containers:
-      main:
-        env:
-          DB_HOSTNAME: immich-postgres-rw
-          DB_USERNAME:
-            valueFrom:
-              secretKeyRef:
-                name: immich-postgres-credentials
-                key: username
-          DB_PASSWORD:
-            valueFrom:
-              secretKeyRef:
-                name: immich-postgres-credentials
-                key: password
-          DB_DATABASE_NAME: immich
-          REDIS_HOSTNAME: immich-valkey
-          IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
-        extraVolumeMounts:
-          - name: nextcloud-photos
-            mountPath: /usr/src/app/external
-            readOnly: true
-    extraVolumes:
-      - name: nextcloud-photos
-        persistentVolumeClaim:
-          claimName: immich-nextcloud-photos-pvc
+env:
+  DB_HOSTNAME: immich-postgres-rw
+  DB_USERNAME:
+    valueFrom:
+      secretKeyRef:
+        name: immich-postgres-credentials
+        key: username
+  DB_PASSWORD:
+    valueFrom:
+      secretKeyRef:
+        name: immich-postgres-credentials
+        key: password
+  DB_DATABASE_NAME: immich
+  REDIS_HOSTNAME: immich-valkey
+  IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+
+extraVolumes:
+  - name: nextcloud-photos
+    persistentVolumeClaim:
+      claimName: immich-nextcloud-photos-pvc
+
+extraVolumeMounts:
+  - name: nextcloud-photos
+    mountPath: /usr/src/app/external
+    readOnly: true
 
 # BLOQUEIO DE INGRESS (Resolve o erro "Immich ML")
 machine-learning:
@@ -67,3 +65,4 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
   fsGroup: 0
+  
