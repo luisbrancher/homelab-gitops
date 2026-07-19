@@ -20,6 +20,14 @@ controllers:
           DB_DATABASE_NAME: immich
           REDIS_HOSTNAME: immich-valkey
           IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+        extraVolumeMounts:
+          - name: nextcloud-photos
+            mountPath: /usr/src/app/external
+            readOnly: true
+    extraVolumes:
+      - name: nextcloud-photos
+        persistentVolumeClaim:
+          claimName: immich-nextcloud-photos-pvc
 
 # BLOQUEIO DE INGRESS (Resolve o erro "Immich ML")
 machine-learning:
@@ -54,11 +62,6 @@ immich:
   persistence:
     library:
       existingClaim: immich-pvc
-    external:
-      enabled: true
-      existingClaim: immich-nextcloud-photos-pvc
-      mountPath: /usr/src/app/external
-      readOnly: true
 
 podSecurityContext:
   runAsUser: 0
