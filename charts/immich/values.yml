@@ -1,21 +1,22 @@
 image:
   tag: v3.0.3
 
-env:
-  DB_HOSTNAME: immich-postgres-rw
-  DB_USERNAME:
-    valueFrom:
-      secretKeyRef:
-        name: immich-postgres-credentials
-        key: username
-  DB_PASSWORD:
-    valueFrom:
-      secretKeyRef:
-        name: immich-postgres-credentials
-        key: password
-  DB_DATABASE_NAME: immich
-  REDIS_HOSTNAME: immich-valkey
-  IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+server:
+  env:
+    DB_HOSTNAME: immich-postgres-rw
+    DB_USERNAME:
+      valueFrom:
+        secretKeyRef:
+          name: immich-postgres-credentials
+          key: username
+    DB_PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: immich-postgres-credentials
+          key: password
+    DB_DATABASE_NAME: immich
+    REDIS_HOSTNAME: immich-valkey
+    IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
 
 extraVolumes:
   - name: nextcloud-photos
@@ -65,4 +66,3 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
   fsGroup: 0
-  
