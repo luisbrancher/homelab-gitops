@@ -1,4 +1,16 @@
 ---
+image:
+  repository: nextcloud
+  tag: 29.0.16
+  
+# Ajuste de recursos para garantir estabilidade durante a migração
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    memory: 1Gi
+
 nextcloud:
   host: nextcloud.homelab.luisbrancher.dev
   existingSecret:
