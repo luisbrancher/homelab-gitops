@@ -27,18 +27,10 @@ controllers:
 
 machine-learning:
   image:
-    tag: *immich-version # Puxa a versão da âncora
-  # BLOQUEIO DE INGRESS (Resolve o erro "Immich ML")
-  ingress:
-    main:
-      enabled: false
+    tag: *immich-version
 
 valkey:
   enabled: true
-  # BLOQUEIO DE INGRESS 
-  ingress:
-    main:
-      enabled: false
 
 # Montagem da biblioteca externa (Nextcloud Photos)
 extraVolumes:
@@ -52,8 +44,9 @@ extraVolumeMounts:
     mountPath: /usr/src/app/external
     readOnly: true
 
-# Ingress principal (aponta corretamente apenas para o server)
+# GERENCIAMENTO CENTRALIZADO DE INGRESS
 ingress:
+  # Ingress principal (ativo)
   server:
     enabled: true
     annotations:
@@ -67,6 +60,12 @@ ingress:
         paths:
           - path: /
             pathType: Prefix
+  
+  # Bloqueia a criação dos ingresses concorrentes
+  machine-learning:
+    enabled: false
+  valkey:
+    enabled: false
 
 # STORAGE
 immich:
