@@ -1,11 +1,9 @@
-# Define a versão do Immich em um único lugar usando YAML Anchor
 x-immich-version: &immich-version "v3.0.3"
 
 controllers:
   main:
     containers:
       main:
-        # Puxa a versão da âncora para atropelar o default do chart
         image:
           repository: ghcr.io/immich-app/immich-server
           tag: *immich-version
@@ -25,6 +23,26 @@ controllers:
           REDIS_HOSTNAME: immich-valkey
           IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
 
+# Configuração exclusiva do painel web
+server:
+  image:
+    tag: *immich-version
+  # O Ingress agora vive AQUI DENTRO, só para o server
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      tls:
+        - secretName: immich-tls
+          hosts:
+            - immich.homelab.luisbrancher.dev
+      hosts:
+        - host: immich.homelab.luisbrancher.dev
+          paths:
+            - path: /
+              pathType: Prefix
+
 machine-learning:
   image:
     tag: *immich-version
@@ -32,7 +50,6 @@ machine-learning:
 valkey:
   enabled: true
 
-# Montagem da biblioteca externa (Nextcloud Photos)
 extraVolumes:
   - name: nextcloud-photos
     persistentVolumeClaim:
@@ -44,30 +61,6 @@ extraVolumeMounts:
     mountPath: /usr/src/app/external
     readOnly: true
 
-# GERENCIAMENTO CENTRALIZADO DE INGRESS
-ingress:
-  # Ingress principal (ativo)
-  server:
-    enabled: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-    tls:
-      - secretName: immich-tls
-        hosts:
-          - immich.homelab.luisbrancher.dev
-    hosts:
-      - host: immich.homelab.luisbrancher.dev
-        paths:
-          - path: /
-            pathType: Prefix
-  
-  # Bloqueia a criação dos ingresses concorrentes
-  machine-learning:
-    enabled: false
-  valkey:
-    enabled: false
-
-# STORAGE
 immich:
   persistence:
     library:
