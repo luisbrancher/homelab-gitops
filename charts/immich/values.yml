@@ -24,6 +24,27 @@ controllers:
           DB_DATABASE_NAME: immich
           REDIS_HOSTNAME: immich-valkey
           IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+          # CONFIGURAÇÕES DE OTIMIZAÇÃO E HARDWARE
+          IMMICH_HWACCEL: "qsv"
+          IMMICH_JOB_CONCURRENCY_TRANSCODING: "1"
+          IMMICH_JOB_CONCURRENCY_THUMBNAIL: "1"
+          IMMICH_JOB_CONCURRENCY_METADATA_EXTRACTION: "1"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: "4000m"
+            memory: "4Gi"
+        securityContext:
+          privileged: true
+
+# Configuração de Acesso ao Hardware (QuickSync)
+additionalDevices:
+  - name: gpu
+    type: HostPath
+    hostPath: /dev/dri/renderD128
+    mountPath: /dev/dri/renderD128
 
 # Configuração exclusiva do painel web
 server:
@@ -48,6 +69,10 @@ server:
 machine-learning:
   image:
     tag: *immich-version
+  resources:
+    limits:
+      cpu: "1000m"
+      memory: "2Gi"
 
 valkey:
   enabled: true
