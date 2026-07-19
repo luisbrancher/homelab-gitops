@@ -18,6 +18,14 @@ nextcloud:
     secretName: nextcloud-credentials
     usernameKey: username
     passwordKey: password
+# Traefik proxy 
+  configs:
+    proxy.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array('10.42.0.0/16'),
+        'overwriteprotocol' => 'https',
+      );
 
 ingress:
   enabled: true
