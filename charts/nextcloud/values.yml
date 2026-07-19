@@ -1,7 +1,7 @@
 ---
 image:
   repository: nextcloud
-  tag: 31.0.14
+  tag: 32.0.12
   
 # Ajuste de recursos para garantir estabilidade durante a migração
 resources:
