@@ -1,27 +1,14 @@
-# Força a versão da imagem globalmente e em cada componente
-image:
-  tag: v3.0.3
-
-server:
-  image:
-    tag: v3.0.3
-
-machine-learning:
-  image:
-    tag: v3.0.3
-  # BLOQUEIO DE INGRESS (Resolve o erro "Immich ML")
-  ingress:
-    main:
-      enabled: false
+# Define a versão do Immich em um único lugar usando YAML Anchor
+x-immich-version: &immich-version "v3.0.3"
 
 controllers:
   main:
     containers:
       main:
-      # Injeção forçada da imagem para sobrepor o default do chart
+        # Puxa a versão da âncora para atropelar o default do chart
         image:
           repository: ghcr.io/immich-app/immich-server
-          tag: v3.0.3
+          tag: *immich-version
         env:
           DB_HOSTNAME: immich-postgres-rw
           DB_USERNAME:
@@ -38,6 +25,21 @@ controllers:
           REDIS_HOSTNAME: immich-valkey
           IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
 
+machine-learning:
+  image:
+    tag: *immich-version # Puxa a versão da âncora
+  # BLOQUEIO DE INGRESS (Resolve o erro "Immich ML")
+  ingress:
+    main:
+      enabled: false
+
+valkey:
+  enabled: true
+  # BLOQUEIO DE INGRESS 
+  ingress:
+    main:
+      enabled: false
+
 # Montagem da biblioteca externa (Nextcloud Photos)
 extraVolumes:
   - name: nextcloud-photos
@@ -50,14 +52,7 @@ extraVolumeMounts:
     mountPath: /usr/src/app/external
     readOnly: true
 
-# BLOQUEIO DE INGRESS 
-valkey:
-  enabled: true
-  ingress:
-    main:
-      enabled: false
-
-# Ingress principal
+# Ingress principal (aponta corretamente apenas para o server)
 ingress:
   server:
     enabled: true
