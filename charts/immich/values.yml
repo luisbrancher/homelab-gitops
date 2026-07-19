@@ -38,6 +38,9 @@ controllers:
             memory: "4Gi"
         securityContext:
           privileged: true
+        volumeMounts:
+          - name: gpu
+            mountPath: /dev/dri/renderD128
 
 # Configuração de Acesso ao Hardware (QuickSync)
 additionalDevices:
@@ -86,6 +89,14 @@ persistence:
     globalMounts:
       - path: /usr/src/app/external
         readOnly: true
+        
+  # bloco para a GPU
+  gpu:
+    enabled: true
+    type: hostPath
+    hostPath: /dev/dri/renderD128
+    globalMounts:
+      - path: /dev/dri/renderD128
 
 # OBRIGATÓRIO PARA A VALIDAÇÃO DO CHART DO IMMICH
 immich:
