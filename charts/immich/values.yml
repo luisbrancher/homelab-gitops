@@ -1,9 +1,11 @@
+# Força a versão da imagem globalmente e em cada componente usando YAML Anchor
 x-immich-version: &immich-version "v3.0.3"
 
 controllers:
   main:
     containers:
       main:
+        # Injeção forçada da imagem para sobrepor o default do chart
         image:
           repository: ghcr.io/immich-app/immich-server
           tag: *immich-version
@@ -27,7 +29,7 @@ controllers:
 server:
   image:
     tag: *immich-version
-  # O Ingress agora vive AQUI DENTRO, só para o server
+  # Ingress principal (aponta corretamente apenas para o server e evita o erro "Immich ML")
   ingress:
     main:
       enabled: true
@@ -50,21 +52,19 @@ machine-learning:
 valkey:
   enabled: true
 
-extraVolumes:
-  - name: nextcloud-photos
-    persistentVolumeClaim:
-      claimName: immich-nextcloud-photos-pvc
-      readOnly: true
-
-extraVolumeMounts:
-  - name: nextcloud-photos
-    mountPath: /usr/src/app/external
-    readOnly: true
-
-immich:
-  persistence:
-    library:
-      existingClaim: immich-pvc
+# GERENCIAMENTO CENTRALIZADO DE VOLUMES / STORAGE
+persistence:
+  # Volume principal do Immich (obrigatório)
+  library:
+    existingClaim: immich-pvc
+  
+  # Montagem da biblioteca externa (Nextcloud Photos)
+  nextcloud-photos:
+    enabled: true
+    existingClaim: immich-nextcloud-photos-pvc
+    globalMounts:
+      - path: /usr/src/app/external
+        readOnly: true
 
 podSecurityContext:
   runAsUser: 0
