@@ -40,7 +40,7 @@ spec:
   storageClassName: ""
   nfs:
     server: 10.10.10.15         
-    path: /mnt/data-ssd/nextcloud/photos
+    path: /mnt/data-ssd/nextcloud
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
