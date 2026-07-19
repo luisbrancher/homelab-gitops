@@ -29,7 +29,7 @@ controllers:
 server:
   image:
     tag: *immich-version
-  # Ingress principal (aponta corretamente apenas para o server e evita o erro "Immich ML")
+  # Ingress principal (aponta corretamente apenas para o server)
   ingress:
     main:
       enabled: true
@@ -52,12 +52,8 @@ machine-learning:
 valkey:
   enabled: true
 
-# GERENCIAMENTO CENTRALIZADO DE VOLUMES / STORAGE
+# GERENCIAMENTO CENTRALIZADO DE VOLUMES (app-template)
 persistence:
-  # Volume principal do Immich (obrigatório)
-  library:
-    existingClaim: immich-pvc
-  
   # Montagem da biblioteca externa (Nextcloud Photos)
   nextcloud-photos:
     enabled: true
@@ -65,6 +61,12 @@ persistence:
     globalMounts:
       - path: /usr/src/app/external
         readOnly: true
+
+# OBRIGATÓRIO PARA A VALIDAÇÃO DO CHART DO IMMICH
+immich:
+  persistence:
+    library:
+      existingClaim: immich-pvc
 
 podSecurityContext:
   runAsUser: 0
