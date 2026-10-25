@@ -1,0 +1,53 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nextcloud-db-backup
+  namespace: nextcloud
+spec:
+  schedule: "0 22 * * *"   # antes do snapshot diário do data-ssd (00:00)
+  timeZone: America/Sao_Paulo
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: pg-dump
+              image: postgres:17.5   # mesma versão do servidor (pg17.5); pg_dump não pode ser mais velho que o banco
+              env:
+                - name: PGHOST
+                  value: nextcloud-postgres-rw
+                - name: PGDATABASE
+                  value: nextcloud
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-db-credentials
+                      key: username
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-db-credentials
+                      key: password
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  f="/dumps/nextcloud-$(date +%Y%m%dT%H%M%S).dump"
+                  pg_dump -Fc -f "$f.tmp"
+                  pg_restore --list "$f.tmp" > /dev/null
+                  mv "$f.tmp" "$f"
+                  find /dumps -name 'nextcloud-*.dump' -mtime +14 -delete
+                  ls -lh /dumps
+              volumeMounts:
+                - name: dumps
+                  mountPath: /dumps
+          volumes:
+            - name: dumps
+              persistentVolumeClaim:
+                claimName: nextcloud-db-dumps-pvc

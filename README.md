@@ -52,6 +52,7 @@ homelab-gitops/
 │   │   ├── values.yml
 │   │   ├── pvc.yml                # Applied manually — see "PVCs & ArgoCD" below
 │   │   ├── postgres-cluster.yml  # CNPG Cluster CRD for Nextcloud
+│   │   ├── db-backup-cronjob.yml # Daily pg_dump to NFS — applied manually
 │   │   └── db-service.yml        # ExternalName service — redirects nextcloud-postgresql to CNPG
 │   ├── immich/
 │   │   ├── values.yml
@@ -159,6 +160,9 @@ kubectl create secret generic nextcloud-db-credentials \
 kubectl apply -f charts/immich/postgres-cluster.yml
 kubectl apply -f charts/nextcloud/postgres-cluster.yml
 
+# 7b. Apply the Nextcloud DB backup CronJob (its PV/PVC came in step 4)
+kubectl apply -f charts/nextcloud/db-backup-cronjob.yml
+
 # 8. Create Immich VectorChord extensions manually as superuser
 # (the cloudnative-vectorchord image has the extensions available but the
 # immich user lacks permission to create them — must run as postgres)
@@ -217,6 +221,34 @@ Persistent data lives on a dedicated NAS (TrueNAS, NFS, SSD pool `data-ssd`). Je
 | `jellyfin-media-pvc` | hostPath `/mnt/media-ssd` (dedicated SSD, LVM-Thin) | 220Gi |
 | Immich Postgres (CNPG-managed) | local-path (k3s default StorageClass) | 20Gi |
 | Nextcloud Postgres (CNPG-managed) | local-path (k3s default StorageClass) | 10Gi |
+| `nextcloud-db-dumps-pvc` | NFS `10.10.10.15:/mnt/data-ssd/db-dumps` | 10Gi |
+
+---
+
+## Database Backups
+
+The CNPG clusters live on `local-path` (VM disk), outside the NAS snapshots. Each database is dumped daily to NFS so the dumps are covered by the recursive `data-ssd` snapshot and its replication to `backup-hdd`.
+
+| Database | Mechanism | Schedule (America/Sao_Paulo) | Location | Kept |
+|---|---|---|---|---|
+| Immich | Immich built-in DB backup | 23:00 (02:00 UTC) | `data-ssd/immich/backups` | 14 |
+| Nextcloud | CronJob `nextcloud-db-backup` (`pg_dump -Fc`) | 22:00 | `data-ssd/db-dumps` | 14 days |
+
+Both run before the daily `data-ssd` snapshot (00:00), so the latest dump is always in it.
+
+Run the Nextcloud backup now and check it:
+
+```bash
+kubectl create job --from=cronjob/nextcloud-db-backup manual-backup -n nextcloud
+kubectl logs -f job/manual-backup -n nextcloud
+kubectl delete job manual-backup -n nextcloud
+```
+
+Restore (Nextcloud in maintenance mode first):
+
+```bash
+pg_restore -h <host> -U nextcloud -d nextcloud --clean --if-exists nextcloud-<timestamp>.dump
+```
 
 ---
 
