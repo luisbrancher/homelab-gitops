@@ -214,7 +214,7 @@ Persistent data lives on a dedicated NAS (TrueNAS, NFS, SSD pool `data-ssd`). Je
 
 | PVC | Backend | Size |
 |---|---|---|
-| `nextcloud-pvc` | NFS `10.10.10.15:/mnt/data-ssd/nextcloud` | 1500Gi |
+| `nextcloud-pvc` | NFS `10.10.10.15:/mnt/data-ssd/nextcloud` | 200Gi |
 | `immich-pvc` | NFS `10.10.10.15:/mnt/data-ssd/immich` | 100Gi |
 | `immich-nextcloud-photos-pvc` | NFS `10.10.10.15:/mnt/data-ssd/nextcloud/photos` (read-only) | 1500Gi |
 | `jellyfin-config-pvc` | NFS `10.10.10.15:/mnt/data-ssd/jellyfin` | 10Gi |
