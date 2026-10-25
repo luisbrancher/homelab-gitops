@@ -38,7 +38,7 @@ spec:
               args:
                 - |
                   set -eu
-                  f="/dumps/nextcloud-$(date +%Y%m%dT%H%M%S).dump"
+                  f="/dumps/nextcloud-$(date -u +%Y%m%dT%H%M%SZ).dump"
                   pg_dump -Fc -f "$f.tmp"
                   pg_restore --list "$f.tmp" > /dev/null
                   mv "$f.tmp" "$f"

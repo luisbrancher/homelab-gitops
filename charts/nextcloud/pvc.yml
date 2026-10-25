@@ -25,7 +25,7 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 1500Gi
+      storage: 200Gi   # PVC estático não pode ser redimensionado; valor real no cluster
   volumeName: nextcloud-pv
 ---
 apiVersion: v1
