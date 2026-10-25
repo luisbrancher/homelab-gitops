@@ -1,0 +1,23 @@
+# Pod descartável de restore (manual, não gerenciado pelo ArgoCD). Ver docs/runbooks/database-restore.md
+apiVersion: v1
+kind: Pod
+metadata:
+  name: restore-test
+  namespace: nextcloud
+spec:
+  restartPolicy: Never
+  containers:
+    - name: pg
+      image: postgres:17.5
+      env:
+        - name: POSTGRES_PASSWORD
+          value: restore-test
+      volumeMounts:
+        - name: dumps
+          mountPath: /dumps
+          readOnly: true
+  volumes:
+    - name: dumps
+      persistentVolumeClaim:
+        claimName: nextcloud-db-dumps-pvc
+        readOnly: true

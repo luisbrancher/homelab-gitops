@@ -62,10 +62,19 @@ homelab-gitops/
 │       ├── values.yml
 │       └── pvc.yml                # Applied manually — see "PVCs & ArgoCD" below
 │
-└── config/
-    └── cert-manager/
-        ├── cluster-issuer.yml
-        └── cloudflare-secret.yml  # Placeholder only — real value applied via CLI
+├── config/
+│   └── cert-manager/
+│       ├── cluster-issuer.yml
+│       └── cloudflare-secret.yml  # Placeholder only — real value applied via CLI
+│
+├── docs/
+│   └── runbooks/                 # Step-by-step operational procedures
+│       └── database-restore.md
+│
+└── tools/                        # Manual helpers — not watched by ArgoCD
+    └── restore-test/             # Throwaway Postgres pods used by the restore runbook
+        ├── nextcloud.yml
+        └── immich.yml
 ```
 
 ---
@@ -244,11 +253,8 @@ kubectl logs -f job/manual-backup -n nextcloud
 kubectl delete job manual-backup -n nextcloud
 ```
 
-Restore (Nextcloud in maintenance mode first):
-
-```bash
-pg_restore -h <host> -U nextcloud -d nextcloud --clean --if-exists nextcloud-<timestamp>.dump
-```
+Restore procedures (periodic restore test and disaster restore): see
+[docs/runbooks/database-restore.md](docs/runbooks/database-restore.md).
 
 ---
 

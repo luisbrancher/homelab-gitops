@@ -1,0 +1,25 @@
+# Pod descartável de restore (manual, não gerenciado pelo ArgoCD). Ver docs/runbooks/database-restore.md
+# Precisa de Postgres 17 com VectorChord 0.3.0 (mesma versão do cluster immich-postgres).
+apiVersion: v1
+kind: Pod
+metadata:
+  name: restore-test
+  namespace: immich
+spec:
+  restartPolicy: Never
+  containers:
+    - name: pg
+      image: tensorchord/vchord-postgres:pg17-v0.3.0
+      args: ["postgres", "-c", "shared_preload_libraries=vchord.so"]
+      env:
+        - name: POSTGRES_PASSWORD
+          value: restore-test
+      volumeMounts:
+        - name: library
+          mountPath: /library
+          readOnly: true
+  volumes:
+    - name: library
+      persistentVolumeClaim:
+        claimName: immich-pvc
+        readOnly: true
