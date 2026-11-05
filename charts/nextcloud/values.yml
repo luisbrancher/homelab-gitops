@@ -45,6 +45,17 @@ persistence:
   enabled: true
   existingClaim: nextcloud-pvc
 
+# Sidecar que roda o cron.php a cada 5 min (substitui o modo AJAX)
+cronjob:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
 internalDatabase:
   enabled: false
 
