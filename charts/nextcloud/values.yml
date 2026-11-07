@@ -12,7 +12,7 @@ resources:
     memory: 1Gi
 
 nextcloud:
-  host: nextcloud.homelab.luisbrancher.dev
+  host: nextcloud.lflab.cc
   existingSecret:
     enabled: true
     secretName: nextcloud-credentials
@@ -27,16 +27,24 @@ nextcloud:
         'overwriteprotocol' => 'https',
       );
 
+# Transição lflab.cc: os dois nomes ativos. Sem a annotation do cert-manager
+# (o ingress-shim recusa bloco tls sem secretName); o secret antigo segue
+# valendo até expirar. Nome novo usa o wildcard padrão do Traefik.
+# Ao final: remover o nome antigo e o primeiro bloco tls.
 ingress:
   enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
   tls:
     - secretName: nextcloud-tls
       hosts:
         - nextcloud.homelab.luisbrancher.dev
+    - hosts:
+        - nextcloud.lflab.cc
   hosts:
     - host: nextcloud.homelab.luisbrancher.dev
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: nextcloud.lflab.cc
       paths:
         - path: /
           pathType: Prefix

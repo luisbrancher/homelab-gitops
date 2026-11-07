@@ -1,14 +1,19 @@
 ---
 ingress:
   enabled: true
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+  # Transição lflab.cc: ver comentário em charts/nextcloud/values.yml
   tls:
     - secretName: jellyfin-tls
       hosts:
         - jellyfin.homelab.luisbrancher.dev
+    - hosts:
+        - jellyfin.lflab.cc
   hosts:
     - host: jellyfin.homelab.luisbrancher.dev
+      paths:
+        - path: /
+          pathType: Prefix
+    - host: jellyfin.lflab.cc
       paths:
         - path: /
           pathType: Prefix

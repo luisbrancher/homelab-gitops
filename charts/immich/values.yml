@@ -57,14 +57,19 @@ server:
   ingress:
     main:
       enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
+      # Transição lflab.cc: ver comentário em charts/nextcloud/values.yml
       tls:
         - secretName: immich-tls
           hosts:
             - immich.homelab.luisbrancher.dev
+        - hosts:
+            - immich.lflab.cc
       hosts:
         - host: immich.homelab.luisbrancher.dev
+          paths:
+            - path: /
+              pathType: Prefix
+        - host: immich.lflab.cc
           paths:
             - path: /
               pathType: Prefix
