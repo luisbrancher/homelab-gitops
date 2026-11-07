@@ -38,9 +38,6 @@ controllers:
             memory: "4Gi"
         securityContext:
           privileged: true
-        volumeMounts:
-          - name: gpu
-            mountPath: /dev/dri/renderD128
 
 # Configuração de Acesso ao Hardware (QuickSync)
 additionalDevices:
