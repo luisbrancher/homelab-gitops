@@ -24,9 +24,9 @@ For infrastructure provisioning (Terraform + Ansible), see [homelab-infra](https
 
 | Service | URL | Notes |
 |---|---|---|
-| Nextcloud | `nextcloud.homelab.luisbrancher.dev` | File sync, source of truth for files. CNPG-backed Postgres. |
-| Immich | `immich.homelab.luisbrancher.dev` | Photo library (v3.0.0), CNPG-backed Postgres with VectorChord, reads Nextcloud photos as External Library (pending) |
-| Jellyfin | `jellyfin.homelab.luisbrancher.dev` | Media server, download/watch/delete workflow. Media on dedicated SSD. Also accessible via NodePort 30096. |
+| Nextcloud | `nextcloud.lflab.cc` | File sync, source of truth for files. CNPG-backed Postgres. |
+| Immich | `immich.lflab.cc` | Photo library (v3.0.0), CNPG-backed Postgres with VectorChord, reads Nextcloud photos as External Library (pending) |
+| Jellyfin | `jellyfin.lflab.cc` | Media server, download/watch/delete workflow. Media on dedicated SSD. Also accessible via NodePort 30096. |
 | cert-manager | — | Cloudflare DNS-01 challenge, Let's Encrypt |
 | cnpg-operator | — | Manages PostgreSQL clusters for Immich and Nextcloud |
 
@@ -63,9 +63,12 @@ homelab-gitops/
 │       └── pvc.yml                # Applied manually — see "PVCs & ArgoCD" below
 │
 ├── config/
-│   └── cert-manager/
-│       ├── cluster-issuer.yml
-│       └── cloudflare-secret.yml  # Placeholder only — real value applied via CLI
+│   ├── cert-manager/
+│   │   ├── cluster-issuer.yml
+│   │   ├── cloudflare-secret.yml  # Placeholder only — real value applied via CLI
+│   │   └── wildcard-certificate.yml  # *.lflab.cc, DNS-01
+│   └── traefik/
+│       └── tlsstore-default.yml   # Default TLS store pointing at the wildcard cert
 │
 ├── docs/
 │   └── runbooks/                 # Step-by-step operational procedures
@@ -181,6 +184,8 @@ kubectl exec -it immich-postgres-1 -n immich -- psql -U postgres -d immich -c "C
 
 # 9. Apply cert-manager config (after cert-manager pods are healthy)
 kubectl apply -f config/cert-manager/cluster-issuer.yml
+kubectl apply -f config/cert-manager/wildcard-certificate.yml
+kubectl apply -f config/traefik/tlsstore-default.yml
 
 # 10. Create remaining secrets (never committed to git)
 kubectl create secret generic nextcloud-credentials \
@@ -260,9 +265,9 @@ Restore procedures (periodic restore test and disaster restore): see
 
 ## DNS
 
-Services are exposed via Tailscale. DNS records on Cloudflare point to the k3s-node Tailscale IP with proxy disabled (DNS only). Access requires being connected to the Tailscale network.
+Services are exposed via Tailscale under `lflab.cc`. DNS records on Cloudflare (`nextcloud`, `immich`, `jellyfin`, `all`) point to the k3s-node Tailscale IP with proxy disabled (DNS only). They are created by hand for now. Access requires being connected to the Tailscale network.
 
-TLS certificates are issued automatically by cert-manager via Cloudflare DNS-01 challenge.
+TLS uses a single wildcard certificate (`*.lflab.cc`), issued by cert-manager via Cloudflare DNS-01 and served by Traefik as the default certificate (`TLSStore`). Ingresses don't carry their own cert-manager annotation.
 
 ---
 
