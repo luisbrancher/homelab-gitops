@@ -1,0 +1,12 @@
+---
+# Certificado padrão do Traefik: serve o wildcard para qualquer Ingress com
+# bloco `tls` sem secretName. O nome precisa ser "default".
+# Só aplicar depois que o Certificate wildcard-lflab estiver Ready.
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: kube-system
+spec:
+  defaultCertificate:
+    secretName: wildcard-lflab-tls

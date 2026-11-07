@@ -1,0 +1,16 @@
+---
+# Certificado wildcard *.lflab.cc, emitido por DNS-01 (Cloudflare).
+# Fica em kube-system porque o Traefik do k3s roda lá e o TLSStore só
+# enxerga secrets do próprio namespace. Aplicado à mão (ver README).
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-lflab
+  namespace: kube-system
+spec:
+  secretName: wildcard-lflab-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.lflab.cc"
