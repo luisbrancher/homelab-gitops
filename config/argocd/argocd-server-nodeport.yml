@@ -1,0 +1,20 @@
+---
+# Expõe o painel do ArgoCD em NodePort 30443 (LAN 10.x e Tailscale 100.x),
+# sem alterar o Service argocd-server do manifest "stable". O TLS continua o do
+# próprio ArgoCD (certificado autoassinado). Nunca expor público: o ArgoCD tem
+# poder de admin no cluster.
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-server-nodeport
+  namespace: argocd
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: argocd-server
+  ports:
+    - name: https
+      port: 443
+      targetPort: 8080
+      nodePort: 30443
+      protocol: TCP
